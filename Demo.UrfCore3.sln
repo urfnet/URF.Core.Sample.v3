@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29209.152
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DA749822-0AE7-48CB-873D-931391C20D00}"
+	ProjectSection(SolutionItems) = preProject
+		global.json = global.json
+		ReadMe.md = ReadMe.md
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.UrfCore3.EF", "Demo.UrfCore3.EF\Demo.UrfCore3.EF.csproj", "{3934F957-EF04-49F9-A275-7DE035BB0275}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.UrfCore3.Api", "Demo.UrfCore3.Api\Demo.UrfCore3.Api.csproj", "{89B12A4C-45B0-49F1-87C8-1E584EB60920}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3934F957-EF04-49F9-A275-7DE035BB0275}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3934F957-EF04-49F9-A275-7DE035BB0275}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3934F957-EF04-49F9-A275-7DE035BB0275}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3934F957-EF04-49F9-A275-7DE035BB0275}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89B12A4C-45B0-49F1-87C8-1E584EB60920}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89B12A4C-45B0-49F1-87C8-1E584EB60920}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89B12A4C-45B0-49F1-87C8-1E584EB60920}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89B12A4C-45B0-49F1-87C8-1E584EB60920}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DEC7DE8C-0805-4AD1-810D-BA55E1AB6F84}
+	EndGlobalSection
+EndGlobal
