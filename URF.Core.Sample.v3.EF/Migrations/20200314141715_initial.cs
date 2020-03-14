@@ -1,7 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Demo.UrfCore3.EF.Migrations
+namespace URF.Core.Sample.v3.EF.Migrations
 {
     public partial class initial : Migration
     {
@@ -12,7 +11,7 @@ namespace Demo.UrfCore3.EF.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     ProductName = table.Column<string>(nullable: true),
                     UnitPrice = table.Column<decimal>(nullable: false)
                 },

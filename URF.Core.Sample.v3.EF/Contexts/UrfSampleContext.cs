@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using URF.Core.Sample.v3.Models;
 
-namespace Demo.UrfCore3.EF.Models
+namespace URF.Core.Sample.v3.EF.Contexts
 {
-    public class UrfDemoContext : DbContext
+    public class UrfSampleContext : DbContext
     {
-        public UrfDemoContext(DbContextOptions<UrfDemoContext> options) : base(options) { }
+        public UrfSampleContext(DbContextOptions<UrfSampleContext> options) : base(options) { }
 
         public DbSet<Product> Products { get; set; }
 
