@@ -1,30 +1,21 @@
-# URF Core 3.0 Demo
+# URF Core 3.x Demo
 
-Sample using Unit of Work and Repository Framework (URF) with ASP.NET Core 3.0
+Sample using Unit of Work and Repository Framework (URF) with ASP.NET Core 3.x
 
 ## Prerequisites
 
-- .NET Core SDK [latest 3.0 version](https://dotnet.microsoft.com/download/dotnet-core)
-- EF Core CLI
-
+- .NET Core SDK [latest 3.x version](https://dotnet.microsoft.com/download/dotnet-core)
+- EF Core CLI (specify current version)
     ```
-    dotnet tool install --global dotnet-ef --version 3.0.0-*
+    dotnet tool uninstall --global dotnet-ef
+    dotnet tool install --global dotnet-ef --version 3.1.2
     ```
 
 ## EF Core Code First
 
-1. Create a .NET Standard 2.1 class library
+1. Create `Models` .NET Standard 2.1 class library.
 
-    ```
-    dotnet new classlib -n Demo.UrfCore3.EF
-    ```
-   - Edit csproj file to set `TargetFramework` to `netstandard2.0`.
-
-2. Add NuGet packages (v3.0+)
-   - Microsoft.EntityFrameworkCore.SqlServer
-   - Microsoft.EntityFrameworkCore.Design
-3. Add `Product` class
-
+2. Add `Product` class.
     ```csharp
     public class Product
     {
@@ -34,32 +25,40 @@ Sample using Unit of Work and Repository Framework (URF) with ASP.NET Core 3.0
     }
     ```
 
-4. Add `UrfDemoContext` class that extends `DbContext`
+3. Create `EF` .NET Core class library.
+   - Reference the Models project.
+   - Add NuGet packages:
+     - URF.Core.EF
+     - Microsoft.EntityFrameworkCore.SqlServer
+     - Microsoft.EntityFrameworkCore.Design
 
+4. Add `UrfSampleContext` class that extends `DbContext`
+   - Add Contexts folder.
+  
     ```csharp
-    public class UrfDemoContext : DbContext
+    public class UrfSampleContext : DbContext
     {
-        public UrfDemoContext(DbContextOptions<UrfDemoContext> options) : base(options) { }
+        public UrfSampleContext(DbContextOptions<UrfSampleContext> options) : base(options) { }
 
         public DbSet<Product> Products { get; set; }
     }
     ```
 
-5. Add `UrfDemoContextFactory` class that implements `IDesignTimeDbContextFactory<UrfDemoContext>`
+5. Add `UrfSampleContextFactory` class that implements `IDesignTimeDbContextFactory<UrfSampleContext>`
 
     ```csharp
-    public class UrfDemoContextFactory : IDesignTimeDbContextFactory<UrfDemoContext>
+    public class UrfSampleContextFactory : IDesignTimeDbContextFactory<UrfSampleContext>
     {
-        public UrfDemoContext CreateDbContext(string[] args)
+        public UrfSampleContext CreateDbContext(string[] args)
         {
-            var optionsBuilder = new DbContextOptionsBuilder<UrfDemoContext>();
-            optionsBuilder.UseSqlServer(@"Data Source=(localdb)\MSSQLLocalDB;initial catalog=UrfDemo;Integrated Security=True; MultipleActiveResultSets=True");
-            return new UrfDemoContext(optionsBuilder.Options);
+            var optionsBuilder = new DbContextOptionsBuilder<UrfSampleContext>();
+            optionsBuilder.UseSqlServer(@"Data Source=(localdb)\MSSQLLocalDB;initial catalog=UrfSample;Integrated Security=True; MultipleActiveResultSets=True");
+            return new UrfSampleContext(optionsBuilder.Options);
         }
     }
     ```
 
-6. Add code to `UrfDemoContext` to seed data the database
+6. Add code to `UrfSampleContext` to seed data the database.
 
     ```csharp
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -72,13 +71,13 @@ Sample using Unit of Work and Repository Framework (URF) with ASP.NET Core 3.0
     }
     ```
 
-7. Open command prompt at Data project directory and add an EF migration
+7. Open command prompt at EF project directory and add an EF migration.
 
     ```
     dotnet ef migrations add initial
     ```
 
-8. Apply the EF migration to the database
+8.  Apply the EF migration to the database
 
     ```
     dotnet ef database update
@@ -86,23 +85,25 @@ Sample using Unit of Work and Repository Framework (URF) with ASP.NET Core 3.0
 
 ## URF.Core Unit of Work
 
-1. Add the `URF.Core.EF` package to the Demo.UrfCore3.EF class library.
-
-2. Create a `IUrfDemoUnitOfWork` interface that extends `IUnitOfWork`.
-
+1. Create `Abstractions` .NET Standard 2.1 class library.
+   - Reference the Models project.
+   - Add URF.Core.Abstractions package.
+   - Add `IUrfSampleUnitOfWork` interface that extends `IUnitOfWork` and adds `ProductsRepository` property.
     ```csharp
-    public interface IUrfDemoUnitOfWork : IUnitOfWork
+    public interface IUrfSampleUnitOfWork : IUnitOfWork
     {
         public IRepository<Product> ProductsRepository { get; }
     }
     ```
 
-3. Create a `UrfDemoUnitOfWork` class that extends `UnitOfWork` and implements `IUrfDemoUnitOfWork`.
+2. In the `EF` project add a reference to the `Abstractions` project.
+   - Add `UnitsOfWork` folder.
+   - Create a `UrfSampleUnitOfWork` class that extends `UnitOfWork` and implements `IUrfSampleUnitOfWork`.
 
     ```csharp
-    public class UrfDemoUnitOfWork : UnitOfWork, IUrfDemoUnitOfWork
+    public class UrfSampleUnitOfWork : UnitOfWork, IUrfSampleUnitOfWork
     {
-        public UrfDemoUnitOfWork(DbContext context, IRepository<Product> productsRepository) : base(context)
+        public UrfSampleUnitOfWork(DbContext context, IRepository<Product> productsRepository) : base(context)
         {
             ProductsRepository = productsRepository;
         }
@@ -113,65 +114,58 @@ Sample using Unit of Work and Repository Framework (URF) with ASP.NET Core 3.0
 
 ## Web API with URF.Core
 
-1. Scaffold a new ASP.NET Core Web API project
+1. Add a new ASP.NET Core Web API project
+   - Remove `WeatherForecast` and `WeatherForecastController` classes.
+   - Add NuGet packages:
+     - Microsoft.EntityFrameworkCore.SqlServer
+     - URF.Core.EF
+   - Reference Models, Abstractions and EF projects.
 
-    ```
-    dotnet new webapi -n Demo.UrfCore3.Api
-    ```
-
-2. Add NuGet packages  (v3.0+)
-   - Microsoft.EntityFrameworkCore.SqlServer
-   - Microsoft.EntityFrameworkCore.Design
-   - URF.Core.EF
-
-3. Reference the class library project.
-   - Demo.UrfCore3.EF
-
-4. Add a connection string to appsettings.json.
+2. Add a connection string to appsettings.json.
 
     ```json
     "ConnectionStrings": {
-    "UrfDemoContext": "Data Source=(localdb)\\MSSQLLocalDB;initial catalog=UrfDemo;Integrated Security=True; MultipleActiveResultSets=True"
+    "UrfSampleContext": "Data Source=(localdb)\\MSSQLLocalDB;initial catalog=UrfSample;Integrated Security=True; MultipleActiveResultSets=True"
     }
     ```
 
-5. Register services in `Startup.ConfigureServices`.
+3. Register services in `Startup.ConfigureServices`.
 
     ```csharp
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddControllers();
-        var connectionString = Configuration.GetConnectionString(nameof(UrfDemoContext));
-        services.AddDbContext<UrfDemoContext>(options => options.UseSqlServer(connectionString));
-        services.AddScoped<DbContext, UrfDemoContext>();
-        services.AddScoped<IUrfDemoUnitOfWork, UrfDemoUnitOfWork>();
+        var connectionString = Configuration.GetConnectionString(nameof(UrfSampleContext));
+        services.AddDbContext<UrfSampleContext>(options => options.UseSqlServer(connectionString));
+        services.AddScoped<DbContext, UrfSampleContext>();
+        services.AddScoped<IUrfSampleUnitOfWork, UrfSampleUnitOfWork>();
         services.AddScoped<IRepository<Product>, Repository<Product>>();
     }
     ```
 
-6. Add a `ProductsController` controller.
+4. Add a `ProductController` controller.
 
     ```csharp
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductsController : ControllerBase
+    public class ProductController : ControllerBase
     {
-        public IUrfDemoUnitOfWork UnitOfWork { get; }
+        public IUrfSampleUnitOfWork UnitOfWork { get; }
 
-        public ProductsController(IUrfDemoUnitOfWork unitOfWork)
+        public ProductController(IUrfSampleUnitOfWork unitOfWork)
         {
             UnitOfWork = unitOfWork;
         }
 
-        // GET: api/Products
+        // GET: api/Product
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
+        public async Task<ActionResult<IEnumerable<Product>>> GetProduct()
         {
-            var products = await UnitOfWork.ProductsRepository.Query().SelectAsync();
+            var products = await UnitOfWork.ProductsRepository.Queryable().ToListAsync();
             return Ok(products);
         }
 
-        // GET: api/Products/5
+        // GET: api/Produc/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Product>> GetProduct(int id)
         {
@@ -181,7 +175,7 @@ Sample using Unit of Work and Repository Framework (URF) with ASP.NET Core 3.0
             return product;
         }
 
-        // PUT: api/Products/5
+        // PUT: api/Produc/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProduct(int id, Product product)
         {
@@ -204,7 +198,7 @@ Sample using Unit of Work and Repository Framework (URF) with ASP.NET Core 3.0
             return Ok(product);
         }
 
-        // POST: api/Products
+        // POST: api/Product
         [HttpPost]
         public async Task<ActionResult<Product>> PostProduct(Product product)
         {
@@ -213,7 +207,7 @@ Sample using Unit of Work and Repository Framework (URF) with ASP.NET Core 3.0
             return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, product);
         }
 
-        // DELETE: api/Products/5
+        // DELETE: api/Product/5
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteProduct(int id)
         {
@@ -231,14 +225,20 @@ Sample using Unit of Work and Repository Framework (URF) with ASP.NET Core 3.0
     }
     ```
 
+5. Update `launchSettings.json` in the Properties folder.
+   - Replace `weatherforecast` with `api/product`.
+   - Set the `Api` project as the startup project.
+   - Select `URF.Core.Sample.v3.Api` for debugging and press F5.
+
 6. Start the Web API project and test with Postman.
+   - Turn off 'SSL certificate verification' in Settings > General
 
     ```
-    GET: https://localhost:5001/api/products
-    GET: https://localhost:5001/api/products/1
+    GET: https://localhost:5001/api/product
+    GET: https://localhost:5001/api/product/1
     ```
     ```
-    POST: https://localhost:5001/api/products
+    POST: https://localhost:5001/api/product
     ```
     ```json
     {
@@ -246,8 +246,9 @@ Sample using Unit of Work and Repository Framework (URF) with ASP.NET Core 3.0
         "unitPrice": 4.00
     }
     ```
+    - Should return 201 Created with correct Location response header.
     ```
-    PUT: https://localhost:5001/api/products/4
+    PUT: https://localhost:5001/api/product/4
     ```
     ```json
     {
@@ -257,5 +258,9 @@ Sample using Unit of Work and Repository Framework (URF) with ASP.NET Core 3.0
     }
     ```
     ```
-    DELETE: https://localhost:5001/api/products/4
+    DELETE: https://localhost:5001/api/product/4
     ```
+    ```
+    GET: https://localhost:5001/api/product/4
+    ```
+    - Should return 404 Not Found.

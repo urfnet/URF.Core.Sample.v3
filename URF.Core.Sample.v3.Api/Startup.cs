@@ -6,10 +6,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using URF.Core.Abstractions;
 using URF.Core.EF;
-using Demo.UrfCore3.EF.Models;
-using Demo.UrfCore3.EF.UnitsOfWork;
+using URF.Core.Sample.v3.Abstractions;
+using URF.Core.Sample.v3.EF.Contexts;
+using URF.Core.Sample.v3.EF.UnitsOfWork;
+using URF.Core.Sample.v3.Models;
 
-namespace Demo.UrfCore3.Api
+namespace URF.Core.Sample.v3.Api
 {
     public class Startup
     {
@@ -24,10 +26,10 @@ namespace Demo.UrfCore3.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            var connectionString = Configuration.GetConnectionString(nameof(UrfDemoContext));
-            services.AddDbContext<UrfDemoContext>(options => options.UseSqlServer(connectionString));
-            services.AddScoped<DbContext, UrfDemoContext>();
-            services.AddScoped<IUrfDemoUnitOfWork, UrfDemoUnitOfWork>();
+            var connectionString = Configuration.GetConnectionString(nameof(UrfSampleContext));
+            services.AddDbContext<UrfSampleContext>(options => options.UseSqlServer(connectionString));
+            services.AddScoped<DbContext, UrfSampleContext>();
+            services.AddScoped<IUrfSampleUnitOfWork, UrfSampleUnitOfWork>();
             services.AddScoped<IRepository<Product>, Repository<Product>>();
         }
 

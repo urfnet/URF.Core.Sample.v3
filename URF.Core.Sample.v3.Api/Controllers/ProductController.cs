@@ -1,32 +1,32 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Demo.UrfCore3.EF.Models;
-using Demo.UrfCore3.EF.UnitsOfWork;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using URF.Core.Sample.v3.Abstractions;
+using URF.Core.Sample.v3.Models;
 
-namespace Demo.UrfCore3.Api.Controllers
+namespace URF.Core.Sample.v3.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductsController : ControllerBase
+    public class ProductController : ControllerBase
     {
-        public IUrfDemoUnitOfWork UnitOfWork { get; }
+        public IUrfSampleUnitOfWork UnitOfWork { get; }
 
-        public ProductsController(IUrfDemoUnitOfWork unitOfWork)
+        public ProductController(IUrfSampleUnitOfWork unitOfWork)
         {
             UnitOfWork = unitOfWork;
         }
 
-        // GET: api/Products
+        // GET: api/Product
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
+        public async Task<ActionResult<IEnumerable<Product>>> GetProduct()
         {
-            var products = await UnitOfWork.ProductsRepository.Query().SelectAsync();
+            var products = await UnitOfWork.ProductsRepository.Queryable().ToListAsync();
             return Ok(products);
         }
 
-        // GET: api/Products/5
+        // GET: api/Produc/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Product>> GetProduct(int id)
         {
@@ -36,7 +36,7 @@ namespace Demo.UrfCore3.Api.Controllers
             return product;
         }
 
-        // PUT: api/Products/5
+        // PUT: api/Produc/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProduct(int id, Product product)
         {
@@ -59,7 +59,7 @@ namespace Demo.UrfCore3.Api.Controllers
             return Ok(product);
         }
 
-        // POST: api/Products
+        // POST: api/Product
         [HttpPost]
         public async Task<ActionResult<Product>> PostProduct(Product product)
         {
@@ -68,7 +68,7 @@ namespace Demo.UrfCore3.Api.Controllers
             return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, product);
         }
 
-        // DELETE: api/Products/5
+        // DELETE: api/Product/5
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteProduct(int id)
         {

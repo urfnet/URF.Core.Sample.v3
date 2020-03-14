@@ -1,4 +1,4 @@
-﻿namespace Demo.UrfCore3.EF.Models
+﻿namespace URF.Core.Sample.v3.Models
 {
     public class Product
     {
