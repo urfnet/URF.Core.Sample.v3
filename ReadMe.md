@@ -4,11 +4,11 @@ Sample using Unit of Work and Repository Framework (URF) with ASP.NET Core 3.x
 
 ## Prerequisites
 
-- .NET Core SDK [latest 3.x version](https://dotnet.microsoft.com/download/dotnet-core)
+- .NET Core SDK (https://dotnet.microsoft.com/download/dotnet-core)
 - EF Core CLI (specify current version)
     ```
     dotnet tool uninstall --global dotnet-ef
-    dotnet tool install --global dotnet-ef --version 3.1.2
+    dotnet tool install --global dotnet-ef
     ```
 
 ## EF Core Code First

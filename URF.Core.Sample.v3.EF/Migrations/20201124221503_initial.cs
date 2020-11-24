@@ -10,10 +10,10 @@ namespace URF.Core.Sample.v3.EF.Migrations
                 name: "Products",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ProductName = table.Column<string>(nullable: true),
-                    UnitPrice = table.Column<decimal>(nullable: false)
+                    ProductName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UnitPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
                 },
                 constraints: table =>
                 {
